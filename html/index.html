@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sitio Simple</title>
+    <style>
+        .input-box {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Matrices</h1>
+    <form >
+        <input type="text" id="filasInput" class="input-box" name="filas"  placeholder="Cantidad de filas">
+        <input type="text" id="columnasInput" class="input-box" name="columnas" placeholder="Cantidad de columnas">
+        <button type="button" onclick="crearMatriz()">crear Matriz</button>
+        <button type="button" onclick="sumarMatriz()">suma</button>
+    </form>
+    <div class="matrices">
+        
+        <div class="matriz" id="matriz1">
+        </div>
+        
+        <div class="matriz" id="matriz2">
+        </div>
+        <div class="matriz" id="resultado">
+        </div>
+
+    </div>
+<style>
+    
+    .matriz{
+        transition-delay: 20s;
+        background-color: blanchedalmond;
+        border: 2px solid gray;
+            display:flex;
+            flex-direction: row;
+            gap:2px;
+        }
+        .matriz>div{
+            display:flex;
+            flex-direction: column;
+        }
+        .matriz>div>input{
+            min-width: 1rem;
+            max-width: 2rem;
+            background-color: whitesmoke;
+            border: 1px solid slategrey;
+            display:flex;
+            justify-content: center;
+        }
+        .matrices{
+            margin-top: 20rem;
+            display:flex;
+            justify-content: space-around;
+        }
+</style>
+    <script>
+        const crearMatriz = (matriz) =>{
+        const filas =  document.querySelector("#filasInput").value
+        const columnas =  document.querySelector("#columnasInput").value
+        document.querySelectorAll(".matriz").forEach((el)=>{
+            if(el.id == "resultado"){
+                return
+            }
+            el.innerHTML = ""
+            Array(parseInt(columnas)).fill(1).forEach(()=>{
+                const columna = document.createElement("div")
+                columna.className = "columna"
+                Array(parseInt(filas)).fill(1).forEach(()=>{
+                    const inputBox = document.createElement("input")
+                    inputBox.type = "number"
+                    inputBox.className = "valor"
+                    columna.appendChild(inputBox)
+                })
+                el.appendChild(columna)
+            })
+        })
+        }
+        
+         const graficarResultado = (matriz) =>{
+            const resultado = document.querySelector("#resultado")                        
+            resultado.innerHTML = ""
+            const columnas = matriz.length
+            const filas = matriz[0].length
+            console.log(columnas, filas)
+            Array(parseInt(columnas)).fill(1).forEach((e,cIndex)=>{
+                const columna = document.createElement("div")
+                columna.className = "columna"
+                Array(parseInt(filas)).fill(1).forEach((e,fIndex)=>{
+                    const inputBox = document.createElement("input")
+                    inputBox.type = "number"
+                    inputBox.className = "valor"
+                    inputBox.readOnly = true
+                    inputBox.value = matriz[cIndex][fIndex]
+                    columna.appendChild(inputBox)
+                })
+                resultado.appendChild(columna)
+            })
+        }
+
+        const sumarMatriz = () =>{
+            const matrices = Array.from(document.querySelectorAll(".matriz")).map((matriz)=> matriz.id == "resultado" ? false : matriz).filter(Boolean)
+            console.log("acá",matrices)
+            const matricesArray = Array.from(matrices).map((matriz,index)=>(Array.from(matriz.childNodes).map((col)=>
+            col.nodeType == 3 ? false : Array.from(col.childNodes).map((valor)=>parseInt(valor.value)))).filter(Boolean))
+
+
+            // matrices.forEach((matriz,index)=>{
+            //     const hijos = matriz.childNodes
+            //     const matrizArray = []
+            //     hijos.forEach((el)=>{
+            //         let columnaArray = []
+            //         if (el.nodeType == "1"){
+            //             Array.from(el.childNodes).map((valor)=>{
+            //                 columnaArray.push(valor.value)
+            //             })
+            //             // el.childNodes.forEach((valor)=>{
+            //             //     columnaArray.push(valor.value)
+            //             // })
+            //             matrizArray.push(columnaArray)
+            //         }
+            //     })
+            //     array.push(matrizArray)
+                
+            // })
+            // console.log(array)
+
+            // console.log(columnas)
+            // console.log(filas)
+            fetch("http://localhost:4500",
+                {
+                    method:"POST",
+                    mode:"cors",
+                    credentials:"include",
+                    body:JSON.stringify({"matriz1":matricesArray[0],"matriz2":matricesArray[1]}),
+                    headers:{
+                        "Content-Type":"Application/JSON",
+                    }
+                }
+            ).then((response)=>response.status == 500 ? alert("algo salió mal") : res.json()
+            .then((res)=>graficarResultado(res.resultado)))
+        }
+
+        
+    </script>
+</body>
+</html>

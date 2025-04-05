@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sitio Simple</title>
+    <style>
+        .input-box {
+            background-color: white;
+            color: black;
+        }
+
+        .matriz{
+            display:flex;
+            flex-direction: row;
+            gap:2px;
+        }
+        .matriz>div{
+            display:flex;
+            flex-direction: column;
+            background-color:red
+        }
+        .matriz>div>input{
+            min-width: 1rem;
+            max-width: 2rem;
+        }
+        .matrices{
+            display:flex;
+            justify-content: space-around;
+            
+        }
+    </style>
+</head>
+<body>
+    <h1>Escriba los numeros de sus matrices</h1>
+    <div class="matrices">
+
+        <div class="matriz" id="matriz1">
+        </div>
+        <div class="matriz" id="matriz2">
+        </div>
+    </div>
+
+    <script>
+        const hola = Array(3)
+        
+        console.log(typeof(hola))
+        const params = new URLSearchParams(window.location.search)
+        const filas = params.get("filas")
+        const columnas = params.get("columnas")
+        console.log("Filas:",filas,"Columnas:",columnas)
+        document.querySelectorAll(".matriz").forEach((el)=>{
+            Array(parseInt(columnas)).fill(1).forEach(()=>{
+                const columna = document.createElement("div")
+                Array(parseInt(filas)).fill(1).forEach(()=>{
+                    const inputBox = document.createElement("input")
+                    inputBox.type = "number"
+                    columna.appendChild(inputBox)
+                })
+                el.appendChild(columna)
+            })
+        })
+       
+        
+    </script>
+</body>
+</html>
